@@ -20,7 +20,9 @@ func main() {
 	}
 
 	data := IO.UserInput(eqn1, eqn2)
-
+	fmt.Println(utils.INPUT_X0)
+	var argument float64
+	fmt.Scan(&argument)
 	fmt.Println(data)
 
 }

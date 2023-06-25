@@ -5,8 +5,13 @@ import (
 	"math"
 )
 
-func LagrangeInterpolation(data utils.XY, arg float64) (float64, func(x float64) float64, string, float64) {
-	n := len(data.X) - 1
+func LagrangeInterpolation(data utils.XY, arg float64) (
+	yValue float64,
+	function func(x float64) float64,
+	description string,
+	estimationError float64) {
+
+	n := data.GetLength()
 	f := func(x float64) float64 {
 		sum := 0.0
 		for i := 0; i < n; i++ {
