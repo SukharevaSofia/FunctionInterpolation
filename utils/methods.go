@@ -2,8 +2,20 @@ package utils
 
 import "math/big"
 
-func Derive() {
+const dx = 0.000001
 
+func Derive(f func(x float64) float64) func(x float64) float64 {
+	return func(x float64) float64 {
+		return (f(x+dx) - f(x)) / dx
+	}
+}
+
+func Factorial(n int) int {
+	if n == 1 {
+		return 1
+	} else {
+		return n * Factorial(n-1)
+	}
 }
 
 func XYtoMap(xy XY, precision float64) map[float64]float64 {
