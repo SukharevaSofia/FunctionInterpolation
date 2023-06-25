@@ -27,6 +27,7 @@ func NewtonPolynomial(data utils.XY, arg float64) (
 			}
 		}
 
+		// Table
 		fmt.Println("Таблица конечных разностей")
 		for _, list := range table {
 			for _, element := range list {
@@ -35,11 +36,11 @@ func NewtonPolynomial(data utils.XY, arg float64) (
 			fmt.Println("")
 		}
 
-		var sum float64 = 0.0
+		var sum = 0.0
 		for i := 0; i < n; i++ {
-			var diff float64 = table[0][i]
+			var diff = table[0][i]
 			for j := 0; j < i; j++ {
-				diff *= (x - data.X[j])
+				diff *= x - data.X[j]
 			}
 		}
 		return sum
