@@ -1,6 +1,9 @@
 package methods
 
-import "FunctionInterpolation/utils"
+import (
+	"FunctionInterpolation/utils"
+	"fmt"
+)
 
 func NewtonPolynomial(data utils.XY, arg float64) (
 	yValue float64,
@@ -10,20 +13,34 @@ func NewtonPolynomial(data utils.XY, arg float64) (
 
 	n := data.GetLength()
 	f := func(x float64) float64 {
+		table := make([][]float64, n)
+		for i := range table {
+			table[i] = make([]float64, n)
+		}
+
+		for index, value := range data.Y {
+			table[index][0] = value
+		}
+		for j := 1; j < n; j++ {
+			for i := 0; i < n-j; i++ {
+				table[i][j] = (table[i+1][j-1] - table[i][j-1]) / (data.X[i+j] - data.X[i])
+			}
+		}
+
+		fmt.Println("Таблица конечных разностей")
+		for _, list := range table {
+			for _, element := range list {
+				fmt.Printf("%f ", element)
+			}
+			fmt.Println("")
+		}
+
 		var sum float64 = 0.0
-		for i := 1; i < n; i++ {
-			var F float64 = 0.0
+		for i := 0; i < n; i++ {
+			var diff float64 = table[0][i]
 			for j := 0; j < i; j++ {
-				var density float64 = 1.0
-				for k := 0; k <= i; k++ {
-					density *= data.X[j] - data.X[k]
-				}
-				F += data.Y[j] / density
+				diff *= (x - data.X[j])
 			}
-			for j := 0; j < i; j++ {
-				F *= x - data.X[j]
-			}
-			sum += F
 		}
 		return sum
 	}
