@@ -7,7 +7,7 @@ import (
 
 func NewtonPolynomial(data utils.XY, arg float64) (yValue float64, description string, estimationError float64) {
 	n := data.GetLength()
-	f := func(x float64) float64 {
+	f := func(x float64) (float64, [][]float64) {
 		table := make([][]float64, n)
 		for i := range table {
 			table[i] = make([]float64, n)
@@ -18,32 +18,78 @@ func NewtonPolynomial(data utils.XY, arg float64) (yValue float64, description s
 		}
 		for j := 1; j < n; j++ {
 			for i := 0; i < n-j; i++ {
-				table[i][j] = (table[i+1][j-1] - table[i][j-1]) / (data.X[i+j] - data.X[i])
+				table[i][j] = table[i+1][j-1] - table[i][j-1]
 			}
 		}
 
-		var sum = 0.0
-		for i := 0; i < n; i++ {
-			var diff = table[0][i]
-			for j := 0; j < i; j++ {
-				diff *= x - data.X[j]
+		//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+		h := data.X[1] - data.X[0]
+		xMid := (data.X[0] + data.X[n-1]) / 2
+		if x > xMid {
+			t := (x - data.X[n-1]) / h
+			result := table[n-1][0]
+			for i := 1; i < n; i++ {
+				compT := 1.0
+				currT := t
+				for j := 0; j < i; j++ {
+					compT *= currT
+					currT += 1
+				}
+				result += compT * table[n-i-1][i] / float64(utils.Factorial(i))
 			}
-		}
-		// Table
-		fmt.Println("Таблица конечных разностей")
-		for i, list := range table {
-			for j, element := range list {
-				if n-i > j {
-					fmt.Printf("%f ", element)
-				} else {
-					fmt.Printf("")
+			return result, table
+		} else {
+			leftIndex := -1
+			for i := 0; i < n-1; i++ {
+				if data.X[i] < x && x < data.X[i+1] {
+					leftIndex = i
+					break
+				} else if x == data.X[i] {
+					return data.Y[i], table
+				} else if x == data.X[i+1] {
+					return data.Y[i+1], table
 				}
 			}
-			fmt.Println("")
+			if leftIndex == -1 {
+				if x > data.X[n-1] {
+					leftIndex = n - 1
+				} else {
+					leftIndex = 0
+				}
+			}
+			t := (x - data.X[leftIndex]) / h
+			result := table[leftIndex][0]
+			for i := 1; i < n-leftIndex; i++ {
+				compT := 1.0
+				currT := t
+				for j := 0; j < i; j++ {
+					compT *= currT
+					currT--
+				}
+				result += compT * table[leftIndex][i] / float64(utils.Factorial(i))
+			}
+			return result, table
 		}
-		return sum
+
 	}
-	value := f(arg)
-	//errorEst := errorEstimation(data.X, f, arg)
-	return value, "Полином Ньютона", 0
+	fWrapValue := func(x float64) float64 {
+		val, _ := f(x)
+		return val
+	}
+	value := fWrapValue(arg)
+	errorEst := errorEstimation(data.X, fWrapValue, arg)
+	_, table := f(arg)
+	fmt.Println("Таблица конечных разностей")
+	for i, list := range table {
+		for j, element := range list {
+			if n-i > j {
+				fmt.Printf("%f ", element)
+			} else {
+				fmt.Printf("")
+			}
+		}
+		fmt.Println("")
+	}
+	return value, "Полином Ньютона", errorEst
 }

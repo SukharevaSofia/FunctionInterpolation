@@ -2,7 +2,7 @@ package utils
 
 import "math/big"
 
-const dx = 0.000001
+const dx = 1.0
 
 func Derive(f func(x float64) float64) func(x float64) float64 {
 	return func(x float64) float64 {

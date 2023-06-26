@@ -13,6 +13,12 @@ import (
 // TODO: Многочлен Лагранжа,
 // TODO: Многочлен Ньютона с конечными разностями
 func main() {
+	testF := func(x float64) float64 { return x * x }
+	dtest := utils.Derive(testF)
+	for i := 0; i < 6; i++ {
+		fmt.Println(testF(float64(i)), dtest(float64(i)))
+	}
+
 	var eqn1 = utils.Equation{
 		F:              func(x float64) float64 { return math.Pow(x, 2) },
 		NameOfFunction: "y = x^2",
@@ -23,10 +29,33 @@ func main() {
 	}
 
 	data := IO.UserInput(eqn1, eqn2)
-	fmt.Println("XXX: ", data.X, "YYY: ", data.Y)
+	if true {
+		// Previous precision checking routine
+		h := math.Round(data.X[1]*1000) - math.Round(data.X[0]*1000)
+		for i := 1; i < len(data.X); i++ {
+			if math.Round(data.X[i]*1000)-math.Round(data.X[i-1]*1000) != h {
+				fmt.Println(math.Round(data.X[i]*1000)-math.Round(data.X[i-1]*1000), h)
+				fmt.Println(utils.BAD_DOTS)
+				os.Exit(0)
+			}
+		}
+	} else {
+		precision := 0.1
+		for i := 1; i < len(data.X); i++ {
+			if math.Abs(data.X[i]-data.X[i-1]) > precision {
+				fmt.Println(utils.BAD_DOTS)
+				os.Exit(0)
+			}
+		}
+	}
+
 	fmt.Println(utils.INPUT_X0)
 	var argument float64
 	fmt.Scan(&argument)
+	if (argument > data.X[len(data.X)-1]) || (argument < data.X[0]) {
+		fmt.Println(utils.BAD_DOT)
+		os.Exit(0)
+	}
 	newtonResult, newtonName, newtonErr := methods.NewtonPolynomial(data, argument)
 	lagrResult, lagrName, largErr := methods.LagrangeInterpolation(data, argument)
 	graph := chart.Chart{
@@ -40,14 +69,14 @@ func main() {
 				YValues: data.Y,
 			}, chart.ContinuousSeries{
 				Style: chart.Style{
-					DotWidth: 3,
+					DotWidth: 5,
 				},
 				Name:    newtonName,
 				XValues: []float64{argument},
 				YValues: []float64{newtonResult},
 			}, chart.ContinuousSeries{
 				Style: chart.Style{
-					DotWidth: 3,
+					DotWidth: 2,
 				},
 				Name:    lagrName,
 				XValues: []float64{argument},

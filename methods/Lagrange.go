@@ -6,7 +6,6 @@ import (
 )
 
 func LagrangeInterpolation(data utils.XY, arg float64) (yValue float64, description string, estimationError float64) {
-
 	n := data.GetLength()
 	f := func(x float64) float64 {
 		sum := 0.0
@@ -37,15 +36,15 @@ func errorEstimation(xData []float64, f func(x float64) float64, arg float64) fl
 		fn1 = utils.Derive(fn1)
 	}
 	f2 := func(x float64) float64 {
-		p := 1.
-		for i := 0; i < n; i++ {
+		p := 1.0
+		for i := 0; i <= n; i++ {
 			p *= x - xData[i]
 		}
 		return p
 	}
-	max := 0.
+	max := 0.0
 	for _, element := range xData {
-		max = math.Max(max, f(element))
+		max = math.Max(max, fn1(element))
 	}
-	return math.Abs(max*f2(arg)) / float64(utils.Factorial(n+1))
+	return math.Abs(max * f2(arg) / float64(utils.Factorial(n+1)))
 }

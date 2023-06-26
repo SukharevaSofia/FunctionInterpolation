@@ -4,6 +4,7 @@ import (
 	"FunctionInterpolation/utils"
 	"bufio"
 	"fmt"
+	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -33,7 +34,7 @@ func UserInput(eqn1, eqn2 utils.Equation) utils.XY {
 
 func fileInput() utils.XY {
 	var numberOfElements int
-	f, _ := os.Open("data/test1.txt")
+	f, _ := os.Open("data/test2.txt")
 	scanner := bufio.NewScanner(f)
 	scanner.Scan()
 	line := scanner.Text()
@@ -138,13 +139,14 @@ func functionInput(eqn1, eqn2 utils.Equation) utils.XY {
 	}
 	dataX := []float64{}
 	dataY := []float64{}
-	h := (xn - x0) / float64(numberOfElements)
+	h := (xn - x0) / float64(numberOfElements-1)
 
-	for i := x0; i < xn; i += h {
-		dataX = append(dataX, i)
-		dataY = append(dataY, eqn.F(i))
+	for i := x0; i < xn+h; i += h {
+		val := math.Round(i*10000) / 10000
+		dataX = append(dataX, val)
+		dataY = append(dataY, math.Round(eqn.F(val)*10000)/10000)
 	}
-
+	fmt.Println("X: ", dataX, " Y : ", dataY)
 	return utils.XY{
 		X: dataX,
 		Y: dataY,
