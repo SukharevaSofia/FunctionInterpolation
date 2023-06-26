@@ -61,5 +61,6 @@ func main() {
 	picture, _ := os.Create("graph.png")
 	graph.Render(chart.PNG, picture)
 	picture.Close()
-	fmt.Println("ERRORS: ", newtonErr, largErr)
+	fmt.Println("Найденые значения: Ньютон - ", newtonResult, "; Лагранж - ", lagrResult)
+	fmt.Println("Оценки погрешностей: Ньютон - ", newtonErr, "; Лагранж - ", largErr)
 }
