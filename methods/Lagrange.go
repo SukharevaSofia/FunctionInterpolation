@@ -5,11 +5,7 @@ import (
 	"math"
 )
 
-func LagrangeInterpolation(data utils.XY, arg float64) (
-	yValue float64,
-	function func(x float64) float64,
-	description string,
-	estimationError float64) {
+func LagrangeInterpolation(data utils.XY, arg float64) (yValue float64, description string, estimationError float64) {
 
 	n := data.GetLength()
 	f := func(x float64) float64 {
@@ -31,7 +27,7 @@ func LagrangeInterpolation(data utils.XY, arg float64) (
 	}
 	value := f(arg)
 	errorEstim := errorEstimation(data.X, f, arg)
-	return value, f, "Многочлен Лагранжа", errorEstim
+	return value, "Многочлен Лагранжа", errorEstim
 }
 
 func errorEstimation(xData []float64, f func(x float64) float64, arg float64) float64 {

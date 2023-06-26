@@ -15,5 +15,5 @@ func (data XY) GetLength() int {
 		panic("X length does not equal Y length")
 	}
 
-	return len(data.X) - 1
+	return len(data.X)
 }

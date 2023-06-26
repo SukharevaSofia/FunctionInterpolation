@@ -2,9 +2,12 @@ package main
 
 import (
 	"FunctionInterpolation/IO"
+	"FunctionInterpolation/methods"
 	"FunctionInterpolation/utils"
 	"fmt"
+	"github.com/wcharczuk/go-chart/v2"
 	"math"
+	"os"
 )
 
 // TODO: Многочлен Лагранжа,
@@ -20,9 +23,43 @@ func main() {
 	}
 
 	data := IO.UserInput(eqn1, eqn2)
+	fmt.Println("XXX: ", data.X, "YYY: ", data.Y)
 	fmt.Println(utils.INPUT_X0)
 	var argument float64
 	fmt.Scan(&argument)
-	fmt.Println(data)
-
+	newtonResult, newtonName, newtonErr := methods.NewtonPolynomial(data, argument)
+	lagrResult, lagrName, largErr := methods.LagrangeInterpolation(data, argument)
+	graph := chart.Chart{
+		Series: []chart.Series{
+			chart.ContinuousSeries{
+				Style: chart.Style{
+					DotWidth: 2,
+				},
+				Name:    "Узлы интерполяции",
+				XValues: data.X,
+				YValues: data.Y,
+			}, chart.ContinuousSeries{
+				Style: chart.Style{
+					DotWidth: 3,
+				},
+				Name:    newtonName,
+				XValues: []float64{argument},
+				YValues: []float64{newtonResult},
+			}, chart.ContinuousSeries{
+				Style: chart.Style{
+					DotWidth: 3,
+				},
+				Name:    lagrName,
+				XValues: []float64{argument},
+				YValues: []float64{lagrResult},
+			},
+		},
+	}
+	graph.Elements = []chart.Renderable{
+		chart.Legend(&graph),
+	}
+	picture, _ := os.Create("graph.png")
+	graph.Render(chart.PNG, picture)
+	picture.Close()
+	fmt.Println("ERRORS: ", newtonErr, largErr)
 }

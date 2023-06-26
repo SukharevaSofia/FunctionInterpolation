@@ -5,12 +5,7 @@ import (
 	"fmt"
 )
 
-func NewtonPolynomial(data utils.XY, arg float64) (
-	yValue float64,
-	function func(x float64) float64,
-	description string,
-	estimationError float64) {
-
+func NewtonPolynomial(data utils.XY, arg float64) (yValue float64, description string, estimationError float64) {
 	n := data.GetLength()
 	f := func(x float64) float64 {
 		table := make([][]float64, n)
@@ -27,6 +22,13 @@ func NewtonPolynomial(data utils.XY, arg float64) (
 			}
 		}
 
+		var sum = 0.0
+		for i := 0; i < n; i++ {
+			var diff = table[0][i]
+			for j := 0; j < i; j++ {
+				diff *= x - data.X[j]
+			}
+		}
 		// Table
 		fmt.Println("Таблица конечных разностей")
 		for _, list := range table {
@@ -35,17 +37,9 @@ func NewtonPolynomial(data utils.XY, arg float64) (
 			}
 			fmt.Println("")
 		}
-
-		var sum = 0.0
-		for i := 0; i < n; i++ {
-			var diff = table[0][i]
-			for j := 0; j < i; j++ {
-				diff *= x - data.X[j]
-			}
-		}
 		return sum
 	}
 	value := f(arg)
-	errorEstimation := errorEstimation(data.X, f, arg)
-	return value, f, "Полином Ньютона", errorEstimation
+	//errorEst := errorEstimation(data.X, f, arg)
+	return value, "Полином Ньютона", 0
 }

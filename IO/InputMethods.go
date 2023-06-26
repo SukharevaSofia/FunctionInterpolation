@@ -33,7 +33,7 @@ func UserInput(eqn1, eqn2 utils.Equation) utils.XY {
 
 func fileInput() utils.XY {
 	var numberOfElements int
-	f, _ := os.Open("data.txt")
+	f, _ := os.Open("data/test1.txt")
 	scanner := bufio.NewScanner(f)
 	scanner.Scan()
 	line := scanner.Text()
