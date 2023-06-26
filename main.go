@@ -13,12 +13,6 @@ import (
 // TODO: Многочлен Лагранжа,
 // TODO: Многочлен Ньютона с конечными разностями
 func main() {
-	testF := func(x float64) float64 { return x * x }
-	dtest := utils.Derive(testF)
-	for i := 0; i < 6; i++ {
-		fmt.Println(testF(float64(i)), dtest(float64(i)))
-	}
-
 	var eqn1 = utils.Equation{
 		F:              func(x float64) float64 { return math.Pow(x, 2) },
 		NameOfFunction: "y = x^2",
@@ -29,6 +23,10 @@ func main() {
 	}
 
 	data := IO.UserInput(eqn1, eqn2)
+	if data.GetLength() > 18 {
+		fmt.Println(utils.TOO_MUCH_DOTS)
+		os.Exit(0)
+	}
 	if true {
 		// Previous precision checking routine
 		h := math.Round(data.X[1]*1000) - math.Round(data.X[0]*1000)
@@ -41,7 +39,7 @@ func main() {
 		}
 	} else {
 		precision := 0.1
-		for i := 1; i < len(data.X); i++ {
+		for i := 1; i < data.GetLength(); i++ {
 			if math.Abs(data.X[i]-data.X[i-1]) > precision {
 				fmt.Println(utils.BAD_DOTS)
 				os.Exit(0)
