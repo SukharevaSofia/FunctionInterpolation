@@ -31,9 +31,13 @@ func NewtonPolynomial(data utils.XY, arg float64) (yValue float64, description s
 		}
 		// Table
 		fmt.Println("Таблица конечных разностей")
-		for _, list := range table {
-			for _, element := range list {
-				fmt.Printf("%f ", element)
+		for i, list := range table {
+			for j, element := range list {
+				if n-i > j {
+					fmt.Printf("%f ", element)
+				} else {
+					fmt.Printf("")
+				}
 			}
 			fmt.Println("")
 		}
