@@ -45,7 +45,7 @@ func errorEstimation(xData []float64, f func(x float64) float64, arg float64) fl
 	}
 	max := 0.
 	for _, element := range xData {
-		max = math.Max(max, fn1(element))
+		max = math.Max(max, f(element))
 	}
-	return math.Abs(max*(f2(arg))) / float64(utils.Factorial(n+1))
+	return math.Abs(max*f2(arg)) / float64(utils.Factorial(n+1))
 }
